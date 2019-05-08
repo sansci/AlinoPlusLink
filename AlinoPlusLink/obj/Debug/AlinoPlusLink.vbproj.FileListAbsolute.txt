@@ -1,0 +1,17 @@
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.bootLoadFrm.resources
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.calibFrm.resources
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.mainFrm.resources
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.meterFrm.resources
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.Resources.resources
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.SplashScreen1.resources
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.WelcomeScr.resources
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.vbproj.GenerateResource.cache
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.vbproj.CoreCompileInputs.cache
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\bin\Debug\AlinoPlusLink.exe.config
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\bin\Debug\AlinoPlusLink.exe
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\bin\Debug\AlinoPlusLink.pdb
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\bin\Debug\AlinoPlusLink.xml
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.exe
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.xml
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.pdb
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Debug\AlinoPlusLink.vbprojAssemblyReference.cache
