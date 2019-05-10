@@ -42,6 +42,7 @@ Public Class meterFrm
     Const misc5 = 40229
     Const misc6 = 40230
     Const misc7 = 40231
+    Const misc8 = 40232
 
 
     Dim rxBuf As Byte()
@@ -64,6 +65,12 @@ Public Class meterFrm
     Dim sf_months As Integer
     Dim sf_days As Integer
     Dim sf_usd As Integer
+
+    Dim sweepState As Integer
+    Dim sweepInProgress As Integer
+    Dim ipv As Double
+    Dim vpv As Double
+    Dim wpv As Double
 
     Dim enLog As Boolean = False
     Dim toggleFlag As Boolean = False
@@ -156,7 +163,7 @@ Public Class meterFrm
         Dim loByte As Integer
         Dim faultHi As Integer
         Dim faultReg As Long
-        rxBuf = modbus.readHoldingRegisters(&HB, 40196, 36, SerialPort1)
+        rxBuf = modbus.readHoldingRegisters(&HB, 40196, 39, SerialPort1)
         If rxBuf.Length = 1 And rxBuf(0) = 0 Then
             'MsgBox("Insufficient Bytes Recieved (or) No Response", vbCritical)
             ToolStripStatusLabel5.Image = ImageList1.Images(2)
@@ -176,15 +183,22 @@ Public Class meterFrm
                     Case PV_Current
                         combined = Val("&H" + ((hiByte << 8) Or (loByte)).ToString("X4")) / sf_ipv
                         TextBox25.Text = combined.ToString("N2")
+                        wpv = (Val(TextBox25.Text) * Val(TextBox26.Text))
+                        TextBox20.Text = wpv.ToString
                         If CheckBox8.Checked Then
                             Chart1.Series(7).Points.AddY(combined)
                         End If
+                        ipv = combined
+
                     Case PV_Voltage
                         combined = Val("&H" + ((hiByte << 8) Or (loByte)).ToString("X4")) / sf_vpv
                         TextBox26.Text = combined.ToString("N2")
                         If CheckBox7.Checked Then
                             Chart1.Series(6).Points.AddY(combined)
                         End If
+                        vpv = combined
+                        Chart2.Series(2).Points.Clear()
+                        Chart2.Series(2).Points.AddXY(vpv, wpv)
                     Case PV_Watts
                     Case PV_Today_Wh
                         combined = Val("&H" + ((hiByte << 8) Or (loByte)).ToString("X4")) / sf_vbat
@@ -219,6 +233,8 @@ Public Class meterFrm
                         combined = Val("&H" + ((hiByte << 8) Or (loByte)).ToString("X4")) / sf_temp
                         TextBox29.Text = combined.ToString("N2")
                     Case Battery_SOC
+                        combined = Val("&H" + ((hiByte << 8) Or (loByte)).ToString("X4")) / sf_temp
+                        TextBox36.Text = combined.ToString("N2")
                     Case Battery_Today_Ah
                         'cc hs1
                         combined = Val("&H" + ((hiByte << 8) Or (loByte)).ToString("X4")) / sf_temp
@@ -362,6 +378,18 @@ Public Class meterFrm
                     Case misc7
                         faultReg = (faultHi << 16 Or (hiByte << 8) Or (loByte))
                         TextBox19.Text = faultReg.ToString("X8")
+                    Case misc8
+                        If sweepState = 0 And loByte = 1 Then
+                            ' New Sweep
+                            Chart2.Series(0).Points.Clear()
+                            Chart2.Series(1).Points.Clear()
+                            Chart2.Series(2).Points.Clear()
+                            Label38.Text = DateTime.Now.ToString
+                        End If
+                        sweepState = hiByte
+                        sweepInProgress = loByte
+                        Console.WriteLine("Sweep In Progress: " + sweepInProgress.ToString)
+                        Console.WriteLine("Sweep State: " + sweepState.ToString)
                 End Select
 
                 If enLog Then
@@ -373,6 +401,12 @@ Public Class meterFrm
         If enLog Then
             file.Write(vbCrLf)
         End If
+
+        If sweepInProgress = 1 And sweepState = 1 Then
+            Chart2.Series(0).Points.AddXY(vpv, wpv)
+            Chart2.Series(1).Points.AddXY(vpv, ipv)
+        End If
+
     End Sub
 
     Private Sub ToolStripButton5_Click(sender As Object, e As EventArgs) Handles ToolStripButton5.Click
@@ -406,7 +440,7 @@ Public Class meterFrm
         End If
     End Sub
 
-    Private Sub Label35_Click(sender As Object, e As EventArgs) Handles Label35.Click
+    Private Sub Label35_Click(sender As Object, e As EventArgs)
 
     End Sub
 
@@ -516,52 +550,52 @@ Public Class meterFrm
         TextBox21.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox32_TextChanged(sender As Object, e As EventArgs) Handles TextBox32.TextChanged
+    Private Sub TextBox32_TextChanged(sender As Object, e As EventArgs)
         colourRed = 255 - ((limit(Val(TextBox32.Text), 25, 90) - 25) / 65) * 255
         TextBox32.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox35_TextChanged(sender As Object, e As EventArgs) Handles TextBox35.TextChanged
+    Private Sub TextBox35_TextChanged(sender As Object, e As EventArgs)
         colourRed = 255 - ((limit(Val(TextBox35.Text), 25, 90) - 25) / 65) * 255
         TextBox35.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox24_TextChanged(sender As Object, e As EventArgs) Handles TextBox24.TextChanged
+    Private Sub TextBox24_TextChanged(sender As Object, e As EventArgs)
         colourRed = 255 - ((limit(Val(TextBox24.Text), 25, 90) - 25) / 65) * 255
         TextBox24.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox23_TextChanged(sender As Object, e As EventArgs) Handles TextBox23.TextChanged
+    Private Sub TextBox23_TextChanged(sender As Object, e As EventArgs)
         colourRed = 255 - ((limit(Val(TextBox23.Text), 25, 90) - 25) / 65) * 255
         TextBox23.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox29_TextChanged(sender As Object, e As EventArgs) Handles TextBox29.TextChanged
+    Private Sub TextBox29_TextChanged(sender As Object, e As EventArgs)
         colourRed = 255 - ((limit(Val(TextBox29.Text), 25, 90) - 25) / 65) * 255
         TextBox29.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox5_TextChanged(sender As Object, e As EventArgs) Handles TextBox5.TextChanged
+    Private Sub TextBox5_TextChanged(sender As Object, e As EventArgs)
         colourRed = 255 - ((limit(Val(TextBox5.Text), 16.66, 49.98) - 16.66) / 33.32) * 255
         TextBox5.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox6_TextChanged(sender As Object, e As EventArgs) Handles TextBox6.TextChanged
+    Private Sub TextBox6_TextChanged(sender As Object, e As EventArgs)
         colourRed = 255 - ((limit(Val(TextBox6.Text), 16.66, 49.98) - 16.66) / 33.32) * 255
         TextBox6.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox10_TextChanged(sender As Object, e As EventArgs) Handles TextBox10.TextChanged
+    Private Sub TextBox10_TextChanged(sender As Object, e As EventArgs)
         colourRed = 255 - ((limit(Val(TextBox10.Text), 16.66, 49.98) - 16.66) / 33.32) * 255
         TextBox10.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox9_TextChanged(sender As Object, e As EventArgs) Handles TextBox9.TextChanged
+    Private Sub TextBox9_TextChanged(sender As Object, e As EventArgs)
         colourRed = 255 - ((limit(Val(TextBox9.Text), 16.66, 49.98) - 16.66) / 33.32) * 255
         TextBox9.BackColor = Color.FromArgb(255, colourRed, colourRed)
     End Sub
 
-    Private Sub TextBox3_TextChanged(sender As Object, e As EventArgs) Handles TextBox3.TextChanged
+    Private Sub TextBox3_TextChanged(sender As Object, e As EventArgs)
 
     End Sub
 
@@ -633,6 +667,10 @@ Public Class meterFrm
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub Label36_Click(sender As Object, e As EventArgs) Handles Label36.Click
 
     End Sub
 End Class

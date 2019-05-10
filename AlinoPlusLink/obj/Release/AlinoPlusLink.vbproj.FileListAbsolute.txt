@@ -14,3 +14,4 @@ D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Release\AlinoPlusLink.exe
 D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Release\AlinoPlusLink.xml
 D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Release\AlinoPlusLink.pdb
 D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Release\AlinoPlusLink.vbprojAssemblyReference.cache
+D:\vb\repos\AlinoPlusLink\AlinoPlusLink\obj\Release\AlinoPlusLink.SplashScreen1.resources
